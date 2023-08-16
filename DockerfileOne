@@ -1,0 +1,60 @@
+# This Dockerfile can be used to run docker Agent/Slave on same server where docker host is running 
+
+FROM centos:centos7
+
+LABEL maintainer="karancse@gmail.com"
+
+
+# RUN yum update -y
+# RUN yum install -y git 
+    # Install a basic SSH server
+ RUN    yum install -y openssh-server
+ RUN    sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd
+ RUN    mkdir -p /var/run/sshd
+    # Install JDK 8 (latest stable edition at 2019-04-01)
+ RUN   yum install -y java-11-openjdk-devel
+    # Install maven
+ RUN   yum install -y maven
+    # Cleanup old packages
+# RUN   yum autoremove -y 
+# RUN   yum clean all 
+
+# Add user jenkins to the image
+ RUN useradd -m -s /bin/bash jenkins
+# Set password for the jenkins user (you may want to alter this).
+ RUN   echo "jenkins:jenkins" | chpasswd
+ RUN ssh-keygen -A
+ RUN   mkdir -p /home/jenkins/.m2
+ RUN mkdir /home/jenkins/.ssh
+#ADD settings.xml /home/jenkins/.m2/
+
+#Create a file named authorized_keys in the same directory as your Dockerfile.i
+#This file should contain the public key(s) you want to allow for the Jenkins user. Each key should be on a separate line.
+# Copy authorized keys
+ADD authorized_keys /home/jenkins/.ssh/
+
+# Allow Jenkins user to sudo without a password
+RUN echo 'jenkins ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# SSHD configuration
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+
+RUN    chown -R jenkins:jenkins /home/jenkins/.m2/
+RUN    chown -R jenkins:jenkins /home/jenkins/.ssh/
+
+RUN echo 1 | alternatives --config java 
+#This above comamnd will be selecting option 1 i.e. JDK 11 run time environment if you docker host is running on JDK11 and you docker container shoiwng JDK8 even you added JDK 11 in Dockerbuild file.
+# manually try to run the Image in docker and check if two options are coming on runing alternatives --config java -- this wil fail your docker connection and your agent will be offline always due to compatibility issues  of JRE .
+# in my case i was running JENKINS 2.4 ( which runs on JDK11 ) and was including CentOS7 in dockerfile for docker container - which includes jdk8 . 
+# even on adding  RUN   yum install -y java-11-openjdk-devel -- JDK was not getting updated to 11 Java run time .
+
+
+#RUN ln -s /usr/lib/jvm/java-11-openjdk-11.0.20.0.8-1.el7_9.x86_64/ /home/jenkins/jdk
+#RUN chown jenkins:jenkins /home/jenkins/jdk
+
+#USER jenkins
+
+# Standard SSH port
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]
