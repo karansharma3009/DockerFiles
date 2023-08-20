@@ -6,7 +6,7 @@ pipeline {
         }
 
   triggers {
-        pollSCM('* * * * *') // Poll the SCM every minute
+        pollSCM('* * * * *') // Poll the SCM every minute  
     }
         stages {
                 stage("fetching password") {
