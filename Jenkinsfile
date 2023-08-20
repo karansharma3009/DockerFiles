@@ -25,10 +25,10 @@ pipeline {
                         }
             }
             
-             stage("changeSet example") {
+             stage("changeRequest example") {
 
                         when {
-                                changelog ".*some_text*." // this will check if commit message in linked repo has commit message which contains "some_text" then only below steps will vbe triggered. 
+                                changeRequest() // when any changeRquest happens - like pull push etc ...this stage will be triaggered else not 
                         }
 
                         steps {
