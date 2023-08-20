@@ -1,6 +1,5 @@
 pipeline {
         agent any
-
         environment {
                 TEST= "abc"
               //  SSH_CREDENTIALS = credentials("ssh_crdentials") // ssh_credential is ID of credentials saved in Jenkins
@@ -13,9 +12,7 @@ pipeline {
                                 echo "hi this is test job"
                         }
                 }
-
                 stage("changelog example") {
-
                         when {
                                 changelog ".*some_text*." // this will check if commit message in linked repo has commit message which contains "some_text" then only below steps will vbe triggered. 
                         }
