@@ -29,7 +29,7 @@ pipeline {
                         }
 
                         steps {
-                                echo "HELLO WORLD"
+                                echo "HELLO WORLD in CHANGEREQUEST STAGE"
                         }
             }
         }
