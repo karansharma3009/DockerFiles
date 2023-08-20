@@ -32,6 +32,5 @@ pipeline {
                                 echo "HELLO WORLD in CHANGEREQUEST STAGE"
                         }
             }
-        }
-    
+        }   
 }
