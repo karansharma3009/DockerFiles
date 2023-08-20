@@ -5,10 +5,8 @@ pipeline {
               //  SSH_CREDENTIALS = credentials("ssh_crdentials") // ssh_credential is ID of credentials saved in Jenkins
         }
 
-triggers {
-        triggers {
-        pollSCM('*/1 * * * *') // Poll the SCM every 5 minutes
-    }
+  triggers {
+        pollSCM('* * * * *') // Poll the SCM every minute
     }
         stages {
                 stage("fetching password") {
