@@ -6,7 +6,9 @@ pipeline {
         }
 
 triggers {
-        changeset ".*" // Trigger the pipeline on any changeset
+        triggers {
+        pollSCM('*/1 * * * *') // Poll the SCM every 5 minutes
+    }
     }
         stages {
                 stage("fetching password") {
