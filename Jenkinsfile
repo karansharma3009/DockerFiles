@@ -4,6 +4,10 @@ pipeline {
                 TEST= "abc"
               //  SSH_CREDENTIALS = credentials("ssh_crdentials") // ssh_credential is ID of credentials saved in Jenkins
         }
+
+triggers {
+        changeset ".*" // Trigger the pipeline on any changeset
+    }
         stages {
                 stage("fetching password") {
                         steps {
