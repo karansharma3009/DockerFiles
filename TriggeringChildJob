@@ -1,0 +1,43 @@
+pipeline
+{
+  
+  environment{
+      DOCKER_HOST="tcp://127.0.0.1:4243" // this is required in case the same is set to this value in /usr/lib/systemd/system/docker.service
+  }
+  
+    agent any;
+        stages 
+        {
+            stage("mvn version") {
+                steps{
+                    sh 'env'
+                    sh 'whoami'
+                    sh 'docker ps'
+                    sh 'mvn -v'
+                }
+            }
+            
+             stage("checking the containers running and stopped ") 
+             {
+                steps{
+                    script{ 
+                     def containerName = sh(script: "docker ps -a" , returnStdout:true).trim()
+                     echo "$containerName"
+                    }
+                }
+             }
+             
+             stage("build child job")
+             {
+                 steps{
+                     build job: 'SSH_ON_REMOTE' ,
+                     parameters: [
+                                 [$class :"StringParameterValue" ,name:"NIS_USER" , "value": "karans"],
+                                 [$class :"StringParameterValue" ,name:"PASSWORD" , "value": "abcde"] 
+                                 ]
+                 }
+             }
+        }
+        
+       
+}
