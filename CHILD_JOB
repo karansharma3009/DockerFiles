@@ -1,0 +1,21 @@
+pipeline 
+{
+    agent any
+    parameters
+    {
+        string(name:"NIS_USER")
+        string(name:"PASSWORD")
+    }
+    
+    stages 
+    {
+        stage("job_triggered")
+        {
+            steps
+            {
+                echo "Value ${params.NIS_USER}"
+                echo "Valye ${NIS_USER}" // This will fail as NIS_USER dont exist
+            }
+        }
+    }
+}
